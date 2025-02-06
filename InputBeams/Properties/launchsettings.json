@@ -1,0 +1,10 @@
+﻿{
+    "profiles": {
+      "InputBeams (Package)": {
+        "commandName": "MsixPackage"
+      },
+      "InputBeams (Unpackaged)": {
+        "commandName": "Project"
+      }
+    }
+}
