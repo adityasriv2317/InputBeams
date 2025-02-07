@@ -173,4 +173,7 @@
   <data name="Settings_General.Text" xml:space="preserve">
     <value>General</value>
   </data>
+  <data name="Shell_Configuration.Content" xml:space="preserve">
+    <value>Configurations</value>
+  </data>
 </root>

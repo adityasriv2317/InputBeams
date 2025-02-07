@@ -80,6 +80,8 @@ public partial class App : Application
             services.AddTransient<HomePage>();
             services.AddTransient<ShellPage>();
             services.AddTransient<ShellViewModel>();
+            services.AddTransient<ConfigurationViewModel>();
+            services.AddTransient<ConfigurationPage>();
 
             // Configuration
             services.Configure<LocalSettingsOptions>(context.Configuration.GetSection(nameof(LocalSettingsOptions)));
