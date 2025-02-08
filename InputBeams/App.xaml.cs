@@ -58,6 +58,15 @@ public partial class App : Application
             // Other Activation Handlers
             services.AddTransient<IActivationHandler, AppNotificationActivationHandler>();
 
+            services.AddSingleton<INavigationService, NavigationService>();
+            services.AddSingleton<IPageService, PageService>();
+
+            services.AddTransient<HomeViewModel>();
+            services.AddTransient<ConfigurationViewModel>();
+            services.AddTransient<DocumentationViewModel>();
+            services.AddTransient<SettingsViewModel>();
+
+
             // Services
             services.AddSingleton<IAppNotificationService, AppNotificationService>();
             services.AddSingleton<ILocalSettingsService, LocalSettingsService>();
