@@ -34,6 +34,7 @@
             IsBackEnabled="{x:Bind ViewModel.IsBackEnabled, Mode=OneWay}"
             OpenPaneLength="200"
             SelectedItem="{x:Bind ViewModel.Selected, Mode=OneWay}"
+            SelectionChanged="NavigationViewControl_SelectionChanged"
             DisplayModeChanged="NavigationViewControl_DisplayModeChanged"
             Header="{x:Bind ((ContentControl)ViewModel.Selected).Content, Mode=OneWay}">
 
@@ -46,23 +47,25 @@
                 TODO: Update item icons by updating FontIcon.Glyph properties.
                 https://docs.microsoft.com/windows/apps/design/style/segoe-fluent-icons-font#icon-list
                 -->
-                <NavigationViewItem x:Uid="Shell_Home" helpers:NavigationHelper.NavigateTo="InputBeams.ViewModels.HomeViewModel">
+                <NavigationViewItem x:Uid="Shell_Home" Tag="Home" helpers:NavigationHelper.NavigateTo="InputBeams.ViewModels.HomeViewModel">
                     <NavigationViewItem.Icon>
                         <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE80F;"/>
                     </NavigationViewItem.Icon>
                 </NavigationViewItem>
-                
-                <NavigationViewItem x:Uid="Shell_Documentation" helpers:NavigationHelper.NavigateTo="InputBeams.ViewModels.DocumentationViewModel">
+
+                <NavigationViewItem x:Uid="Shell_Configuration" Tag="Configuration" helpers:NavigationHelper.NavigateTo="InputBeams.ViewModels.ConfigurationViewModel">
+                    <NavigationViewItem.Icon>
+                        <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph=""/>
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
+
+                <NavigationViewItem x:Uid="Shell_Documentation" Tag="Documentation" helpers:NavigationHelper.NavigateTo="InputBeams.ViewModels.DocumentationViewModel">
                     <NavigationViewItem.Icon>
                         <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE946;"/>
                     </NavigationViewItem.Icon>
                 </NavigationViewItem>
 
-                <NavigationViewItem x:Uid="Shell_Configuration" helpers:NavigationHelper.NavigateTo="InputBeams.ViewModels.ConfigurationViewModel">
-                    <NavigationViewItem.Icon>
-                        <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE713;"/>
-                    </NavigationViewItem.Icon>
-                </NavigationViewItem>
+                
             </NavigationView.MenuItems>
             
             <!-- Header -->

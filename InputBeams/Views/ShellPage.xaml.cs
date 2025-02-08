@@ -82,4 +82,23 @@ public sealed partial class ShellPage : Page
 
         args.Handled = result;
     }
+
+    private void NavigationViewControl_SelectionChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args)
+    {
+        if (args.SelectedItemContainer != null)
+        {
+            string selectedPage = args.SelectedItemContainer.Tag?.ToString();
+
+            // Only show the header for the Settings page
+            if (selectedPage == "Settings")
+            {
+                sender.Header = "Settings";  // Keep header visible
+            }
+            else
+            {
+                sender.Header = null;  // Hide header for other pages
+            }
+        }
+    }
+
 }
