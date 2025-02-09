@@ -109,4 +109,64 @@ public static class SettingsStorageExtensions
     {
         return string.Concat(name, FileExtension);
     }
+
+    public static void SaveSetting<T>(this ApplicationDataContainer settings, string key, T value)
+    {
+        if (value is bool boolValue)
+        {
+            settings.Values[key] = boolValue; // ✅ Store real boolean
+        }
+        else
+        {
+            settings.Values[key] = value; // ✅ Store other types normally
+        }
+    }
+
+    public static T LoadSetting<T>(this ApplicationDataContainer settings, string key, T defaultValue = default)
+    {
+        if (settings.Values.TryGetValue(key, out object obj))
+        {
+            try
+            {
+                if (obj is T value)
+                {
+                    return value; // ✅ Return directly if type matches
+                }
+
+                Type targetType = typeof(T);
+
+                if (targetType == typeof(bool))
+                {
+                    if (obj is string strValue)
+                    {
+                        if (bool.TryParse(strValue, out bool boolResult))
+                        {
+                            return (T)(object)boolResult; // ✅ Convert stored string to bool
+                        }
+                    }
+                    else if (obj is int intValue)
+                    {
+                        return (T)(object)(intValue != 0); // ✅ Convert 1/0 to true/false
+                    }
+                }
+                else if (targetType == typeof(int) && obj is string intStr)
+                {
+                    if (int.TryParse(intStr, out int intResult))
+                    {
+                        return (T)(object)intResult; // ✅ Convert stored string to int
+                    }
+                }
+
+                System.Diagnostics.Debug.WriteLine($"⚠️ Type mismatch for key '{key}': Expected {targetType}, found {obj.GetType()}");
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"❌ Error loading setting '{key}': {ex.Message}");
+            }
+        }
+
+        return defaultValue; // ✅ Return default if value not found or invalid
+    }
+
+
 }

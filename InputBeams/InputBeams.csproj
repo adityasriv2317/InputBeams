@@ -11,7 +11,66 @@
 	<Nullable>enable</Nullable>
 	<UseWinUI>true</UseWinUI>
     <EnableMsixTooling>true</EnableMsixTooling>
+    <ApplicationIcon>Assets\inputbeams.ico</ApplicationIcon>
+    <NoWin32Manifest>true</NoWin32Manifest>
   </PropertyGroup>
+  <ItemGroup>
+    <Content Remove="Assets\AppLogo.altform-lightunplated_targetsize-16.png" />
+    <Content Remove="Assets\AppLogo.altform-lightunplated_targetsize-24.png" />
+    <Content Remove="Assets\AppLogo.altform-lightunplated_targetsize-256.png" />
+    <Content Remove="Assets\AppLogo.altform-lightunplated_targetsize-32.png" />
+    <Content Remove="Assets\AppLogo.altform-lightunplated_targetsize-48.png" />
+    <Content Remove="Assets\AppLogo.altform-unplated_targetsize-16.png" />
+    <Content Remove="Assets\AppLogo.altform-unplated_targetsize-24.png" />
+    <Content Remove="Assets\AppLogo.altform-unplated_targetsize-256.png" />
+    <Content Remove="Assets\AppLogo.altform-unplated_targetsize-32.png" />
+    <Content Remove="Assets\AppLogo.altform-unplated_targetsize-48.png" />
+    <Content Remove="Assets\AppLogo.scale-100.png" />
+    <Content Remove="Assets\AppLogo.scale-125.png" />
+    <Content Remove="Assets\AppLogo.scale-150.png" />
+    <Content Remove="Assets\AppLogo.scale-200.png" />
+    <Content Remove="Assets\AppLogo.scale-400.png" />
+    <Content Remove="Assets\AppLogo.targetsize-16.png" />
+    <Content Remove="Assets\AppLogo.targetsize-24.png" />
+    <Content Remove="Assets\AppLogo.targetsize-256.png" />
+    <Content Remove="Assets\AppLogo.targetsize-32.png" />
+    <Content Remove="Assets\AppLogo.targetsize-48.png" />
+    <Content Remove="Assets\BadgeLogo.scale-100.png" />
+    <Content Remove="Assets\BadgeLogo.scale-125.png" />
+    <Content Remove="Assets\BadgeLogo.scale-150.png" />
+    <Content Remove="Assets\BadgeLogo.scale-200.png" />
+    <Content Remove="Assets\BadgeLogo.scale-400.png" />
+    <Content Remove="Assets\LargeTile.scale-100.png" />
+    <Content Remove="Assets\LargeTile.scale-125.png" />
+    <Content Remove="Assets\LargeTile.scale-150.png" />
+    <Content Remove="Assets\LargeTile.scale-200.png" />
+    <Content Remove="Assets\LargeTile.scale-400.png" />
+    <Content Remove="Assets\SmallTile.scale-100.png" />
+    <Content Remove="Assets\SmallTile.scale-125.png" />
+    <Content Remove="Assets\SmallTile.scale-150.png" />
+    <Content Remove="Assets\SmallTile.scale-200.png" />
+    <Content Remove="Assets\SmallTile.scale-400.png" />
+    <Content Remove="Assets\SplashScreen.scale-100.png" />
+    <Content Remove="Assets\SplashScreen.scale-125.png" />
+    <Content Remove="Assets\SplashScreen.scale-150.png" />
+    <Content Remove="Assets\SplashScreen.scale-200.png" />
+    <Content Remove="Assets\SplashScreen.scale-400.png" />
+    <Content Remove="Assets\Square150x150Logo.scale-100.png" />
+    <Content Remove="Assets\Square150x150Logo.scale-125.png" />
+    <Content Remove="Assets\Square150x150Logo.scale-150.png" />
+    <Content Remove="Assets\Square150x150Logo.scale-200.png" />
+    <Content Remove="Assets\Square150x150Logo.scale-400.png" />
+    <Content Remove="Assets\StoreLogo.scale-100.png" />
+    <Content Remove="Assets\StoreLogo.scale-125.png" />
+    <Content Remove="Assets\StoreLogo.scale-150.png" />
+    <Content Remove="Assets\StoreLogo.scale-200.png" />
+    <Content Remove="Assets\StoreLogo.scale-400.png" />
+    <Content Remove="Assets\Wide310x150Logo.scale-100.png" />
+    <Content Remove="Assets\Wide310x150Logo.scale-125.png" />
+    <Content Remove="Assets\Wide310x150Logo.scale-150.png" />
+    <Content Remove="Assets\Wide310x150Logo.scale-200.png" />
+    <Content Remove="Assets\Wide310x150Logo.scale-400.png" />
+  </ItemGroup>
   <ItemGroup>
     <None Remove="Views\ConfigurationPage.xaml" />
   </ItemGroup>
