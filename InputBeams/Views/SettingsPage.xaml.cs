@@ -22,8 +22,7 @@ public sealed partial class SettingsPage : Page
     {
         if (sender is ToggleSwitch toggleSwitch)
         {
-            ViewModel.IsVibrationEnabled = toggleSwitch.IsOn;
-            ViewModel.SaveVibrationSetting(toggleSwitch.IsOn); // Persist the setting
+            ViewModel.IsVibrationEnabled = toggleSwitch.IsOn; // ✅ Automatically saves setting
         }
     }
 }

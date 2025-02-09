@@ -12,6 +12,8 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Windows.Storage;
 
 namespace InputBeams;
 
@@ -122,12 +124,20 @@ public partial class App : Application
 
         await App.GetService<IActivationService>().ActivateAsync(args);
 
-        // Load saved vibration setting
-        var isVibrationEnabled = Windows.Storage.ApplicationData.Current.LocalSettings.Values.TryGetValue("VibrationEnabled", out object value) && (bool)value;
+        // ✅ Load saved vibration setting safely
+        object? obj = ApplicationData.Current.LocalSettings.Values["VibrationEnabled"];
+        bool isVibrationEnabled = obj switch
+        {
+            bool boolValue => boolValue, // ✅ If it's already a bool, use it
+            string strValue => bool.TryParse(strValue, out var parsedBool) ? parsedBool : false, // ✅ Convert from string
+            int intValue => intValue != 0, // ✅ Convert from integer (1 = true, 0 = false)
+            _ => false // 🔴 Default to false if it can't be converted
+        };
 
         System.Diagnostics.Debug.WriteLine($"🚀 App Launched: Applying Vibration = {isVibrationEnabled}");
 
         // Apply vibration globally
         GamepadManager.ApplyVibration(isVibrationEnabled);
     }
+
 }
