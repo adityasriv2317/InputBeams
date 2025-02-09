@@ -14,13 +14,26 @@
         <StackPanel
             x:Name="ContentArea">
 
-            <!-- general -->
-            <TextBlock x:Uid="Settings_General" Style="{ThemeResource SubtitleTextBlockStyle}" />
-            <StackPanel Margin="{StaticResource SmallTopBottomMargin}">
-                <ToggleSwitch Header="Run on startup" AutomationProperties.Name="simple ToggleSwitch"/>
+            <!-- 🌟 General Settings -->
+            <TextBlock Text="General" Style="{ThemeResource SubtitleTextBlockStyle}" FontSize="18" Margin="0,10,0,5" />
 
-                <ToggleSwitch Header="Enable Vibration" IsOn="{x:Bind ViewModel.IsVibrationEnabled, Mode=TwoWay}" AutomationProperties.Name="VibrationToggleSwitch" Toggled="VibrationToggle_Toggled"/>
+            <StackPanel Spacing="10">
+                <!-- Run on Startup Toggle -->
+                <ToggleSwitch 
+        Header="Run on Startup" 
+        AutomationProperties.Name="RunOnStartupToggle" 
+        ToolTipService.ToolTip="Automatically launch InputBeams on system startup." 
+        IsOn="{x:Bind ViewModel.IsRunOnStartupEnabled, Mode=TwoWay}" />
+
+                <!-- Enable Vibration Toggle -->
+                <ToggleSwitch 
+        Header="Enable Vibration" 
+        IsOn="{x:Bind ViewModel.IsVibrationEnabled, Mode=TwoWay}" 
+        AutomationProperties.Name="VibrationToggleSwitch" 
+        ToolTipService.ToolTip="Enable or disable vibration feedback for game controllers." 
+        Toggled="VibrationToggle_Toggled"/>
             </StackPanel>
+
 
             <!-- theme -->
             <TextBlock x:Uid="Settings_Personalization" Style="{ThemeResource SubtitleTextBlockStyle}" />
