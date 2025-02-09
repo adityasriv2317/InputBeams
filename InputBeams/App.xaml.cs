@@ -8,7 +8,7 @@ using InputBeams.Notifications;
 using InputBeams.Services;
 using InputBeams.ViewModels;
 using InputBeams.Views;
-
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.UI.Xaml;
@@ -48,12 +48,18 @@ public partial class App : Application
         InitializeComponent();
 
         Host = Microsoft.Extensions.Hosting.Host.
-        CreateDefaultBuilder().
-        UseContentRoot(AppContext.BaseDirectory).
-        ConfigureServices((context, services) =>
-        {
-            // Default Activation Handler
-            services.AddTransient<ActivationHandler<LaunchActivatedEventArgs>, DefaultActivationHandler>();
+            CreateDefaultBuilder().
+            ConfigureLogging(logging =>
+            {
+                logging.ClearProviders(); // Removes default logging providers
+            logging.AddDebug();       // ✅ Enable Debug logging
+            logging.AddConsole();     // ✅ Optional: Add Console logging
+            }).UseContentRoot(AppContext.BaseDirectory).
+    ConfigureServices((context, services) =>
+    {
+
+        // Default Activation Handler
+        services.AddTransient<ActivationHandler<LaunchActivatedEventArgs>, DefaultActivationHandler>();
 
             // Other Activation Handlers
             services.AddTransient<IActivationHandler, AppNotificationActivationHandler>();
@@ -115,5 +121,13 @@ public partial class App : Application
         App.GetService<IAppNotificationService>().Show(string.Format("AppNotificationSamplePayload".GetLocalized(), AppContext.BaseDirectory));
 
         await App.GetService<IActivationService>().ActivateAsync(args);
+
+        // Load saved vibration setting
+        var isVibrationEnabled = Windows.Storage.ApplicationData.Current.LocalSettings.Values.TryGetValue("VibrationEnabled", out object value) && (bool)value;
+
+        System.Diagnostics.Debug.WriteLine($"🚀 App Launched: Applying Vibration = {isVibrationEnabled}");
+
+        // Apply vibration globally
+        GamepadManager.ApplyVibration(isVibrationEnabled);
     }
 }

@@ -18,6 +18,8 @@
             <TextBlock x:Uid="Settings_General" Style="{ThemeResource SubtitleTextBlockStyle}" />
             <StackPanel Margin="{StaticResource SmallTopBottomMargin}">
                 <ToggleSwitch Header="Run on startup" AutomationProperties.Name="simple ToggleSwitch"/>
+
+                <ToggleSwitch Header="Enable Vibration" IsOn="{x:Bind ViewModel.IsVibrationEnabled, Mode=TwoWay}" AutomationProperties.Name="VibrationToggleSwitch" Toggled="VibrationToggle_Toggled"/>
             </StackPanel>
 
             <!-- theme -->

@@ -1,5 +1,5 @@
 ﻿using InputBeams.ViewModels;
-
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 
 namespace InputBeams.Views;
@@ -16,5 +16,14 @@ public sealed partial class SettingsPage : Page
     {
         ViewModel = App.GetService<SettingsViewModel>();
         InitializeComponent();
+    }
+
+    private void VibrationToggle_Toggled(object sender, RoutedEventArgs e)
+    {
+        if (sender is ToggleSwitch toggleSwitch)
+        {
+            ViewModel.IsVibrationEnabled = toggleSwitch.IsOn;
+            ViewModel.SaveVibrationSetting(toggleSwitch.IsOn); // Persist the setting
+        }
     }
 }
