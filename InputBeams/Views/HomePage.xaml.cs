@@ -3,149 +3,207 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Navigation;
 using System;
+using System.Collections.Generic;
 using Windows.System;
 using Windows.Gaming.Input;
+using Windows.Gaming.UI;
 
-namespace InputBeams.Views;
-
-public sealed partial class HomePage : Page
+namespace InputBeams.Views
 {
-    public HomeViewModel ViewModel
+    public sealed partial class HomePage : Page
     {
-        get;
-    }
-
-    public HomePage()
-    {
-        ViewModel = App.GetService<HomeViewModel>();
-        InitializeComponent();
-
-        // Event: fetch devices
-        DeviceStatusText.Text = "Searching for devices...";
-        Gamepad.GamepadAdded += OnGamepadAdded;
-        Gamepad.GamepadRemoved += OnGamepadRemoved;
-    }
-
-    // Event: ToggleSwitch for Enabling/Disabling InputBeams
-    private void OnToggleInputBeams(object sender, RoutedEventArgs e)
-    {
-        if (EnableDisableToggle.IsOn)
+        public HomeViewModel ViewModel
         {
-            StatusText.Text = "InputBeams is Enabled";
+            get;
         }
-        else
+
+        private readonly SettingsViewModel _settingsViewModel;
+        private List<Gamepad> connectedGamepads = new();
+
+        public HomePage()
         {
-            StatusText.Text = "InputBeams is Disabled";
+            ViewModel = App.GetService<HomeViewModel>();
+            _settingsViewModel = App.GetService<SettingsViewModel>();
+
+            InitializeComponent();
+
+            // Initialize UI
+            DeviceStatusText.Text = "Searching for devices...";
+
+            // Subscribe to gamepad events
+            Gamepad.GamepadAdded += OnGamepadAdded;
+            Gamepad.GamepadRemoved += OnGamepadRemoved;
+
+            // Subscribe to vibration setting changes
+            _settingsViewModel.VibrationSettingChanged += OnVibrationSettingChanged;
+
+            System.Diagnostics.Debug.WriteLine("✅ HomePage subscribed to VibrationSettingChanged");
         }
-    }
 
-    // Event: Refresh Button for Checking Connected Devices
-    private void RefreshDevices(object sender, RoutedEventArgs e)
-    {
-        var controllers = GetConnectedControllers();
-
-        _ = DispatcherQueue.TryEnqueue(() =>
+        protected override void OnNavigatedTo(NavigationEventArgs e)
         {
-            if (controllers.Count > 0)
+            base.OnNavigatedTo(e);
+            System.Diagnostics.Debug.WriteLine("🔄 HomePage loaded, checking devices...");
+
+            // Refresh gamepad list
+            RefreshDevices(null, null);
+
+            // Re-subscribe to prevent duplicate subscriptions
+            _settingsViewModel.VibrationSettingChanged -= OnVibrationSettingChanged;
+            _settingsViewModel.VibrationSettingChanged += OnVibrationSettingChanged;
+        }
+
+        // 🔥 Triggered when vibration setting changes
+        private void OnVibrationSettingChanged()
+        {
+            System.Diagnostics.Debug.WriteLine("🔔 Vibration setting changed, refreshing devices...");
+            ApplyVibrationSetting();
+        }
+
+        // ✅ Refresh connected devices
+        private void RefreshDevices(object sender, RoutedEventArgs e)
+        {
+            connectedGamepads = new List<Gamepad>(Gamepad.Gamepads);
+
+            _ = DispatcherQueue.TryEnqueue(() =>
             {
-                Gamepad firstGamepad = controllers[0];
-                RawGameController rawController = RawGameController.FromGameController(firstGamepad);
+                if (connectedGamepads.Count > 0)
+                {
+                    var gamepad = connectedGamepads[0]; // First detected gamepad
 
-                string deviceName = rawController?.DisplayName ?? "Unknown Controller";
-                string inputType = rawController?.AxisCount > 0 ? "Gamepad" : "Other Device";
+                    // 🆕 Displaying the name & type of the controller
+                    string deviceName = GetControllerName(gamepad);
+                    string inputMode = GetInputMode(gamepad);
 
-                // Update UI safely on the main thread
-                DeviceNameText.Text = deviceName;
-                DeviceTypeText.Text = $"Type: {inputType}";
-                DeviceStatusText.Text = "Status: Connected";
+                    DeviceNameText.Text = deviceName;
+                    DeviceStatusText.Text = $"Status: Connected ({inputMode})";
 
-                DeviceImage.Visibility = Visibility.Visible;
-                DeviceGlyph.Visibility = Visibility.Collapsed;
-                InputModeDropdown.Visibility = Visibility.Visible;
-                RefreshButton.Visibility = Visibility.Collapsed;
-            }
-            else
+                    DeviceImage.Visibility = Visibility.Visible;
+                    DeviceGlyph.Visibility = Visibility.Collapsed;
+                    InputModeDropdown.Visibility = Visibility.Visible;
+                    RefreshButton.Visibility = Visibility.Collapsed;
+
+                    ApplyVibrationSetting(); // ✅ Apply vibration when a device is detected
+                }
+                else
+                {
+                    DeviceNameText.Text = "No Device Connected";
+                    DeviceTypeText.Text = "";
+                    DeviceStatusText.Text = "Status: Disconnected";
+
+                    DeviceImage.Visibility = Visibility.Collapsed;
+                    DeviceGlyph.Visibility = Visibility.Visible;
+                    InputModeDropdown.Visibility = Visibility.Collapsed;
+                    RefreshButton.Visibility = Visibility.Visible;
+                }
+            });
+        }
+
+        // ✅ Detects common controller types (Xbox, PlayStation, etc.)
+        private string GetControllerName(Gamepad gamepad)
+        {
+            var gamepads = RawGameController.RawGameControllers;
+            foreach (var rawGamepad in gamepads)
             {
-                // No device connected
-                DeviceNameText.Text = "No Device Connected";
-                DeviceTypeText.Text = "";
-                DeviceStatusText.Text = "Status: Disconnected";
-
-                DeviceImage.Visibility = Visibility.Collapsed;
-                DeviceGlyph.Visibility = Visibility.Visible;
-                InputModeDropdown.Visibility = Visibility.Collapsed;
-                RefreshButton.Visibility = Visibility.Visible;
+                if (rawGamepad.SimpleHapticsControllers.Count > 0)
+                {
+                    if (rawGamepad.DisplayName.Contains("Xbox", StringComparison.OrdinalIgnoreCase))
+                        DeviceTypeText.Text = "Xbox Controller";
+                    else if (rawGamepad.DisplayName.Contains("DualShock", StringComparison.OrdinalIgnoreCase) ||
+                        rawGamepad.DisplayName.Contains("PS", StringComparison.OrdinalIgnoreCase))
+                        DeviceTypeText.Text = "PlayStation Controller";
+                    else
+                        DeviceTypeText.Text = "Generic Gamepad";
+                }
             }
-        });
-    }
-
-
-    // Called when a new gamepad is connected
-    private void OnGamepadAdded(object sender, Gamepad e)
-    {
-        RefreshDevices(null, null);
-    }
-
-    // Called when a gamepad is disconnected
-    private void OnGamepadRemoved(object sender, Gamepad e)
-    {
-        RefreshDevices(null, null);
-    }
-
-    // Function to detect and show available controllers
-    private List<Gamepad> GetConnectedControllers()
-    {
-        List<Gamepad> connectedGamepads = new List<Gamepad>(Gamepad.Gamepads);
-        return connectedGamepads;
-    }
-
-    // Event: Open Windows Device Settings
-    private async void OpenDeviceSettings(object sender, RoutedEventArgs e)
-    {
-        await Launcher.LaunchUriAsync(new Uri("ms-settings:devices"));
-    }
-
-    // Event: Open InputBeams Settings
-    private void OpenInputBeamsSettings(object sender, RoutedEventArgs e)
-    {
-        Frame.Navigate(typeof(SettingsPage));
-    }
-
-    // Event: Open Documentation
-    private void OpenDocumentation(object sender, RoutedEventArgs e)
-    {
-        Frame.Navigate(typeof(DocumentationPage));
-    }
-
-    // Event: Open Configuration
-    private void OpenConfiguration(object sender, RoutedEventArgs e)
-    {
-        Frame.Navigate(typeof(ConfigurationPage));
-    }
-
-    // update connected device input mode
-    private void UpdateInputModeDropdown(Gamepad gamepad)
-    {
-        // Check if the gamepad supports XInput (modern controllers)
-        if (gamepad != null)
-        {
-            InputModeDropdown.Visibility = Visibility.Visible;
-            SelectedInputModeText.Text = "Select Input Mode"; // Default text
+            return RawGameController.RawGameControllers[0].DisplayName;
         }
-        else
+
+        // ✅ Determines whether the controller is using XInput or DInput
+        private string GetInputMode(Gamepad gamepad)
         {
-            InputModeDropdown.Visibility = Visibility.Collapsed;
+            return gamepad switch
+            {
+                _ when Gamepad.Gamepads.Contains(gamepad) => "X-Input",
+                _ => "D-Input"
+            };
+        }
+
+
+        // ✅ Apply vibration settings
+        private void ApplyVibrationSetting()
+        {
+            if (connectedGamepads.Count > 0)
+            {
+                var gamepad = connectedGamepads[0]; // Use first connected gamepad
+                bool isVibrationEnabled = _settingsViewModel.IsVibrationEnabled;
+
+                System.Diagnostics.Debug.WriteLine($"🎮 Applying Vibration: {isVibrationEnabled}");
+
+                gamepad.Vibration = isVibrationEnabled
+                    ? new GamepadVibration { LeftMotor = 0.5, RightMotor = 0.5 }
+                    : new GamepadVibration();
+            }
+        }
+
+        // Event: Gamepad connected
+        private void OnGamepadAdded(object sender, Gamepad e)
+        {
+            RefreshDevices(null, null);
+            ApplyVibrationSetting();
+        }
+
+        // Event: Gamepad disconnected
+        private void OnGamepadRemoved(object sender, Gamepad e)
+        {
+            RefreshDevices(null, null);
+            ApplyVibrationSetting();
+        }
+
+        // Toggle InputBeams state
+        private void OnToggleInputBeams(object sender, RoutedEventArgs e)
+        {
+            StatusText.Text = EnableDisableToggle.IsOn ? "InputBeams is Enabled" : "InputBeams is Disabled";
+        }
+
+        // Open Windows Device Settings
+        private async void OpenDeviceSettings(object sender, RoutedEventArgs e)
+        {
+            await Launcher.LaunchUriAsync(new Uri("ms-settings:devices"));
+        }
+
+        // Navigate to Settings Page
+        private void OpenInputBeamsSettings(object sender, RoutedEventArgs e)
+        {
+            Frame.Navigate(typeof(SettingsPage));
+        }
+
+        // Navigate to Documentation Page
+        private void OpenDocumentation(object sender, RoutedEventArgs e)
+        {
+            Frame.Navigate(typeof(DocumentationPage));
+        }
+
+        // Navigate to Configuration Page
+        private void OpenConfiguration(object sender, RoutedEventArgs e)
+        {
+            Frame.Navigate(typeof(ConfigurationPage));
+        }
+
+        // Update connected device input mode
+        private void UpdateInputModeDropdown(Gamepad gamepad)
+        {
+            InputModeDropdown.Visibility = gamepad != null ? Visibility.Visible : Visibility.Collapsed;
+            SelectedInputModeText.Text = gamepad != null ? "Select Input Mode" : "";
+        }
+
+        // Set input mode
+        private void SetInputMode(object sender, RoutedEventArgs e)
+        {
+            if (sender is MenuFlyoutItem selectedItem)
+            {
+                SelectedInputModeText.Text = $"Mode: {selectedItem.Tag}";
+            }
         }
     }
-
-    private void SetInputMode(object sender, RoutedEventArgs e)
-    {
-        if (sender is MenuFlyoutItem selectedItem)
-        {
-            string mode = selectedItem.Tag.ToString();
-            SelectedInputModeText.Text = $"Mode: {mode}"; // Update UI
-            // Implement actual switching logic (if applicable)
-        }
-    }
-
 }
