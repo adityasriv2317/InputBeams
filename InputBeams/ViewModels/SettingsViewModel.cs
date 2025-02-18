@@ -42,6 +42,7 @@ public partial class SettingsViewModel : ObservableRecipient
     public ICommand ToggleVibrationCommand
     {
         get;
+//hello
     }
 
     public SettingsViewModel(IThemeSelectorService themeSelectorService)
