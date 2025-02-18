@@ -3,11 +3,162 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:InputBeams.Views"
+    xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
-    <Grid>
-        <TextBlock Text="Configuration Page" FontSize="24" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+    <Grid Padding="0 10" ColumnSpacing="15">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="2.5*" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <!-- Left Side (Configuration Panel) -->
+        <StackPanel Grid.Column="0" Spacing="10">
+
+            <!-- Master Controls Panel -->
+            <StackPanel Orientation="Horizontal" Spacing="10">
+                <Button Content="Edit Shortcuts" />
+                <Button Content="Xbox Widget" />
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                    <Button Content="Undo" />
+                    <Button Content="Apply" />
+                </StackPanel>
+            </StackPanel>
+
+            <!-- Input Configuration Panel -->
+            <Border Background="{ThemeResource ControlFillColorSecondaryBrush}" Padding="10" CornerRadius="10">
+                <StackPanel Spacing="10">
+
+                    <!-- Shoulder & System Buttons -->
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1*" />
+                            <ColumnDefinition Width="2*" />
+                            <ColumnDefinition Width="1*" />
+                        </Grid.ColumnDefinitions>
+                        <!-- Left Shoulder -->
+                        <StackPanel Grid.Column="0" HorizontalAlignment="Left">
+                            <TextBlock Text="Left Shoulder" />
+                            <ComboBox PlaceholderText="LB/L1" />
+                            <ComboBox PlaceholderText="LT/L2" />
+                        </StackPanel>
+                        <!-- System Buttons -->
+                        <StackPanel Grid.Column="1" HorizontalAlignment="Center">
+                            <TextBlock Text="System Buttons" />
+                            <ComboBox PlaceholderText="Back" />
+                            <ComboBox PlaceholderText="Start" />
+                            <ComboBox PlaceholderText="Touchpad" />
+                            <ComboBox PlaceholderText="PS/Xbox" />
+                        </StackPanel>
+                        <!-- Right Shoulder -->
+                        <StackPanel Grid.Column="2" HorizontalAlignment="Right">
+                            <TextBlock Text="Right Shoulder" />
+                            <ComboBox PlaceholderText="RB/R1" />
+                            <ComboBox PlaceholderText="RT/R2" />
+                        </StackPanel>
+                    </Grid>
+
+                    <Border Height="1" Background="{ThemeResource SystemControlForegroundBaseLowBrush}" Margin="0,5" />
+
+                    <!-- Analog & Action Buttons -->
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1*" />
+                            <ColumnDefinition Width="1*" />
+                        </Grid.ColumnDefinitions>
+                        <!-- Left Analog -->
+                        <StackPanel Grid.Column="0" HorizontalAlignment="Left">
+                            <TextBlock Text="Left Analog" />
+                            <ComboBox PlaceholderText="Up" />
+                            <ComboBox PlaceholderText="Left" />
+                            <ComboBox PlaceholderText="Right" />
+                            <ComboBox PlaceholderText="Down" />
+                            <ComboBox PlaceholderText="L3" />
+                        </StackPanel>
+                        <!-- Action Buttons -->
+                        <StackPanel Grid.Column="1" HorizontalAlignment="Right">
+                            <TextBlock Text="Action Buttons" />
+                            <ComboBox PlaceholderText="Y" />
+                            <ComboBox PlaceholderText="X" />
+                            <ComboBox PlaceholderText="B" />
+                            <ComboBox PlaceholderText="A" />
+                            <ComboBox PlaceholderText="R3" />
+                        </StackPanel>
+                    </Grid>
+
+                    <Border Height="1" Background="{ThemeResource SystemControlForegroundBaseLowBrush}" Margin="0,5" />
+
+                    <!-- D-Pad & Right Analog -->
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1*" />
+                            <ColumnDefinition Width="1*" />
+                        </Grid.ColumnDefinitions>
+                        <!-- D-Pad -->
+                        <StackPanel Grid.Column="0" HorizontalAlignment="Left">
+                            <TextBlock Text="D-Pad" />
+                            <ComboBox PlaceholderText="Up" />
+                            <ComboBox PlaceholderText="Left" />
+                            <ComboBox PlaceholderText="Right" />
+                            <ComboBox PlaceholderText="Down" />
+                        </StackPanel>
+                        <!-- Right Analog -->
+                        <StackPanel Grid.Column="1" HorizontalAlignment="Right">
+                            <TextBlock Text="Right Analog" />
+                            <ComboBox PlaceholderText="Up" />
+                            <ComboBox PlaceholderText="Left" />
+                            <ComboBox PlaceholderText="Right" />
+                            <ComboBox PlaceholderText="Down" />
+                        </StackPanel>
+                    </Grid>
+
+                </StackPanel>
+            </Border>
+        </StackPanel>
+
+        <!-- Right Side (Gamepad UI & Advanced Settings) -->
+        <StackPanel Grid.Column="1" Spacing="10">
+
+            <!-- Gamepad Live Preview -->
+            <Border Background="{ThemeResource ControlFillColorSecondaryBrush}" Padding="10" CornerRadius="10">
+                <Viewbox>
+                    <Grid x:Name="GamepadPreview" Width="300" Height="200">
+                        <!-- Gamepad UI will be added here -->
+                    </Grid>
+                </Viewbox>
+            </Border>
+
+            <!-- Advanced Settings -->
+            <Border Background="{ThemeResource ControlFillColorSecondaryBrush}" Padding="10" CornerRadius="10">
+                <StackPanel Spacing="10">
+                    <StackPanel Orientation="Horizontal">
+                        <StackPanel Orientation="Vertical">
+                            <TextBlock Text="Advanced Settings" FontWeight="Bold" />
+                            <TextBlock Text="subheading" FontWeight="Normal" />
+                        </StackPanel>
+                        <Button Content="Reset" HorizontalAlignment="Right"/>
+                    </StackPanel>
+                    <Border Height="1" Background="{ThemeResource SystemControlForegroundBaseLowBrush}" Margin="0,5" />
+                    <CheckBox Content="Enable pointer acceleration" />
+                    <CheckBox Content="Invert X Axis" />
+                    <CheckBox Content="Invert Y Axis" />
+                    <CheckBox Content="Use gyroscope as pointer" />
+                    <Border Height="1" Background="{ThemeResource SystemControlForegroundBaseLowBrush}" Margin="0,5" />
+                    <TextBlock Text="Pointer Sensitivity" />
+                    <Slider Minimum="0" Maximum="100" Value="50" />
+                    <Border Height="1" Background="{ThemeResource SystemControlForegroundBaseLowBrush}" Margin="0,5" />
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="10">
+                        <Button Content="Auto" />
+                        <Button Content="Save" />
+                        <Button Content="Load" />
+                        <Button Content="Clear" />
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+
+        </StackPanel>
+
     </Grid>
 </Page>
