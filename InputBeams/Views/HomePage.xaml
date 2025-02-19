@@ -8,7 +8,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
-    <Grid Padding="0 10">
+    <Grid Padding="0 10 0 0">
         <StackPanel Spacing="15">
 
             <!-- Title Block (Master Controls) -->
